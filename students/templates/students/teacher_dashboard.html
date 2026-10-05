@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% block title %}Teacher Dashboard{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-speedometer2"></i> Teacher Dashboard</h2>
+    <div>
+        <a href="{% url 'student_add' %}" class="btn btn-primary btn-sm">Add Student</a>
+        <a href="{% url 'subject_add' %}" class="btn btn-primary btn-sm">Add Subject</a>
+        <a href="{% url 'attendance_add' %}" class="btn btn-primary btn-sm">Record Attendance</a>
+        <a href="{% url 'marks_add' %}" class="btn btn-primary btn-sm">Add Marks</a>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-center bg-primary text-white">
+            <div class="card-body">
+                <i class="bi bi-people" style="font-size: 2rem;"></i>
+                <h3 class="mt-2">{{ total_students }}</h3>
+                <p class="mb-0">Total Students</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-success text-white">
+            <div class="card-body">
+                <i class="bi bi-journal-bookmark" style="font-size: 2rem;"></i>
+                <h3 class="mt-2">{{ total_subjects }}</h3>
+                <p class="mb-0">Total Subjects</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-info text-white">
+            <div class="card-body">
+                <i class="bi bi-calendar-check" style="font-size: 2rem;"></i>
+                <h3 class="mt-2">{{ total_attendance }}</h3>
+                <p class="mb-0">Attendance Records</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center bg-warning text-white">
+            <div class="card-body">
+                <i class="bi bi-award" style="font-size: 2rem;"></i>
+                <h3 class="mt-2">{{ avg_marks }}</h3>
+                <p class="mb-0">Avg Class Marks</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Students Below 75% Attendance -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-exclamation-triangle"></i> Students Below 75% Attendance ({{ below_75_count }})
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student ID</th>
+                                <th>Name</th>
+                                <th>Attendance %</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in below_75 %}
+                            <tr class="table-danger">
+                                <td>{{ item.student.student_id }}</td>
+                                <td>{{ item.student.name }}</td>
+                                <td><strong>{{ item.attendance_percentage }}%</strong></td>
+                                <td><a href="{% url 'student_detail' item.student.pk %}" class="btn btn-sm btn-primary">View</a></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted">No students below 75% attendance</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-grid"></i> Quick Links
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'student_list' %}" class="btn btn-outline-primary w-100">Manage Students</a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'subject_list' %}" class="btn btn-outline-primary w-100">Manage Subjects</a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'attendance_list' %}" class="btn btn-outline-primary w-100">View Attendance</a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'marks_list' %}" class="btn btn-outline-primary w-100">View Marks</a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'analytics_dashboard' %}" class="btn btn-outline-info w-100">Data Analytics</a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <a href="{% url 'charts' %}" class="btn btn-outline-info w-100">Visualizations</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Recent Attendance -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-clock-history"></i> Recent Attendance Records
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Student</th>
+                                <th>Subject</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for att in recent_attendance %}
+                            <tr>
+                                <td>{{ att.date }}</td>
+                                <td>{{ att.student.student_id }}</td>
+                                <td>{{ att.subject.subject_code }}</td>
+                                <td>
+                                    {% if att.status == 'Present' %}
+                                        <span class="badge bg-success">{{ att.status }}</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">{{ att.status }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted">No records found</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Marks -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-award"></i> Recent Marks Records
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Subject</th>
+                                <th>Total</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mark in recent_marks %}
+                            <tr>
+                                <td>{{ mark.student.student_id }}</td>
+                                <td>{{ mark.subject.subject_code }}</td>
+                                <td>{{ mark.total_marks }}</td>
+                                <td><span class="badge bg-primary">{{ mark.grade }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="4" class="text-center text-muted">No records found</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

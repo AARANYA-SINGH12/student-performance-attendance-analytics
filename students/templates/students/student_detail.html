@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block title %}Student Details{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-person"></i> Student Details</h2>
+    <div>
+        <a href="{% url 'student_edit' student.pk %}" class="btn btn-warning">Edit</a>
+        <a href="{% url 'student_list' %}" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Personal Information</div>
+            <div class="card-body">
+                <p><strong>Student ID:</strong> {{ student.student_id }}</p>
+                <p><strong>Name:</strong> {{ student.name }}</p>
+                <p><strong>Email:</strong> {{ student.email }}</p>
+                <p><strong>Phone:</strong> {{ student.phone }}</p>
+                <p><strong>Course:</strong> {{ student.course }}</p>
+                <p><strong>Semester:</strong> {{ student.semester }}</p>
+                <p><strong>Division:</strong> {{ student.division }}</p>
+                <p><strong>Overall Attendance:</strong> <span class="badge bg-info">{{ overall_attendance }}%</span></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Marks</div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Total</th>
+                                <th>Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for mark in marks_list %}
+                            <tr>
+                                <td>{{ mark.subject.subject_code }}</td>
+                                <td>{{ mark.total_marks }}</td>
+                                <td><span class="badge bg-primary">{{ mark.grade }}</span></td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center text-muted">No marks</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-3">
+    <div class="card-header">Recent Attendance</div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Subject</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for att in attendance_records %}
+                    <tr>
+                        <td>{{ att.date }}</td>
+                        <td>{{ att.subject.subject_code }}</td>
+                        <td>
+                            {% if att.status == 'Present' %}
+                                <span class="badge bg-success">Present</span>
+                            {% else %}
+                                <span class="badge bg-danger">Absent</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center text-muted">No attendance records</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

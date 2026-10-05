@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Edit Subject{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">Edit Subject</div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Subject ID</label>
+                        {{ form.subject_id }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subject Name</label>
+                        {{ form.subject_name }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Subject Code</label>
+                        {{ form.subject_code }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Semester</label>
+                        {{ form.semester }}
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'subject_list' %}" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

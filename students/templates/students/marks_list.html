@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Marks{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="bi bi-award"></i> Marks</h2>
+    <a href="{% url 'marks_add' %}" class="btn btn-primary">Add Marks</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Student</th>
+                        <th>Subject</th>
+                        <th>Internal</th>
+                        <th>Assignment</th>
+                        <th>Practical</th>
+                        <th>External</th>
+                        <th>Total</th>
+                        <th>Grade</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in marks %}
+                    <tr>
+                        <td>{{ mark.student.student_id }} - {{ mark.student.name }}</td>
+                        <td>{{ mark.subject.subject_code }}</td>
+                        <td>{{ mark.internal_marks }}</td>
+                        <td>{{ mark.assignment_marks }}</td>
+                        <td>{{ mark.practical_marks }}</td>
+                        <td>{{ mark.external_marks }}</td>
+                        <td><strong>{{ mark.total_marks }}</strong></td>
+                        <td><span class="badge bg-primary">{{ mark.grade }}</span></td>
+                        <td>
+                            <a href="{% url 'marks_edit' mark.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                            <a href="{% url 'marks_delete' mark.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="9" class="text-center text-muted">No marks found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

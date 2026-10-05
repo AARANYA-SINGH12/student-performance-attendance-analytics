@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2><i class="bi bi-person-circle"></i> Student Dashboard</h2>
+    <p class="text-muted">Welcome, {{ student.name }}</p>
+</div>
+
+<!-- Student Info Card -->
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-info-circle"></i> Student Information
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Student ID:</strong> {{ student.student_id }}</p>
+                <p><strong>Name:</strong> {{ student.name }}</p>
+                <p><strong>Email:</strong> {{ student.email }}</p>
+                <p><strong>Phone:</strong> {{ student.phone }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Course:</strong> {{ student.course }}</p>
+                <p><strong>Semester:</strong> {{ student.semester }}</p>
+                <p><strong>Division:</strong> {{ student.division }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Attendance Summary -->
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-calendar-check"></i> Attendance Summary
+    </div>
+    <div class="card-body">
+        <h4 class="text-center mb-4">Overall Attendance: <span class="badge bg-primary">{{ overall_attendance }}%</span></h4>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Subject</th>
+                        <th>Attendance Percentage</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in subject_attendance %}
+                    <tr>
+                        <td>{{ item.subject.subject_name }} ({{ item.subject.subject_code }})</td>
+                        <td>{{ item.percentage }}%</td>
+                        <td>
+                            {% if item.percentage >= 75 %}
+                                <span class="badge bg-success">Good</span>
+                            {% elif item.percentage >= 60 %}
+                                <span class="badge bg-warning">Average</span>
+                            {% else %}
+                                <span class="badge bg-danger">Low</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center text-muted">No attendance records found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Marks Summary -->
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-award"></i> Marks & Performance
+    </div>
+    <div class="card-body">
+        <h4 class="text-center mb-4">Average Marks: <span class="badge bg-success">{{ avg_marks }}</span></h4>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Subject</th>
+                        <th>Internal</th>
+                        <th>Assignment</th>
+                        <th>Practical</th>
+                        <th>External</th>
+                        <th>Total</th>
+                        <th>Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in marks_list %}
+                    <tr>
+                        <td>{{ mark.subject.subject_name }}</td>
+                        <td>{{ mark.internal_marks }}</td>
+                        <td>{{ mark.assignment_marks }}</td>
+                        <td>{{ mark.practical_marks }}</td>
+                        <td>{{ mark.external_marks }}</td>
+                        <td><strong>{{ mark.total_marks }}</strong></td>
+                        <td><span class="badge bg-primary">{{ mark.grade }}</span></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="text-center text-muted">No marks records found</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Performance Summary -->
+<div class="card">
+    <div class="card-header">
+        <i class="bi bi-bar-chart"></i> Performance Summary
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <h5>Overall Attendance</h5>
+                {% if overall_attendance >= 75 %}
+                    <span class="text-success h4">{{ overall_attendance }}% - Satisfactory</span>
+                {% else %}
+                    <span class="text-danger h4">{{ overall_attendance }}% - Needs Improvement</span>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                <h5>Average Marks</h5>
+                {% if avg_marks >= 60 %}
+                    <span class="text-success h4">Good Performance</span>
+                {% elif avg_marks >= 40 %}
+                    <span class="text-warning h4">Average Performance</span>
+                {% else %}
+                    <span class="text-danger h4">Needs Improvement</span>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                <h5>Overall Status</h5>
+                {% if overall_attendance >= 75 and avg_marks >= 60 %}
+                    <span class="badge bg-success p-2">Excellent</span>
+                {% elif overall_attendance >= 60 and avg_marks >= 50 %}
+                    <span class="badge bg-warning p-2">Good</span>
+                {% else %}
+                    <span class="badge bg-danger p-2">Improvement Required</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
